@@ -1,867 +1,599 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyNBA 2K26 Career Tracker</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#0f0f0f;
-  --surface:#1a1a1a;
-  --surface2:#222;
-  --surface3:#2a2a2a;
-  --border:#333;
-  --border2:#444;
-  --text:#f0f0f0;
-  --text2:#aaa;
-  --text3:#666;
-  --blue:#2a78d6;
-  --blue-light:#e6f1fb;
-  --blue-dark:#0c447c;
-  --green:#1baf7a;
-  --amber:#eda100;
-  --red:#e24b4a;
-  --purple:#534ab7;
-  --gray:#888;
-  --radius:8px;
-}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;}
-a{color:var(--blue);}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA 2K26 MyCareer XP System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* Layout */
-.app-shell{display:flex;height:100vh;overflow:hidden;}
-.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
-.main{flex:1;overflow-y:auto;background:var(--bg);}
-.page{display:none;padding:24px;}
-.page.active{display:block;}
+        :root {
+            --bg-primary: #0A1F3F;
+            --bg-secondary: #0F2D52;
+            --bg-tertiary: #1A3A63;
+            --gold-primary: #FFD700;
+            --gold-hover: #FFC700;
+            --text-white: #FFFFFF;
+            --text-secondary: #E8E8E8;
+            --text-tertiary: #B0B0B0;
+        }
 
-/* Sidebar */
-.sb-header{padding:20px 16px 14px;border-bottom:1px solid var(--border);}
-.sb-logo{font-size:15px;font-weight:600;color:var(--text);letter-spacing:.01em;}
-.sb-sub{font-size:11px;color:var(--text3);margin-top:2px;}
-.sb-player{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.sb-avatar{width:36px;height:36px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0;}
-.sb-pname{font-size:13px;font-weight:500;}
-.sb-pos{font-size:11px;color:var(--text3);}
-.sb-ovr{font-size:18px;font-weight:600;color:var(--gray);margin-left:auto;}
-.sb-xp{padding:10px 16px;border-bottom:1px solid var(--border);}
-.xp-label{font-size:10px;color:var(--text3);display:flex;justify-content:space-between;margin-bottom:5px;}
-.xp-track{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;}
-.xp-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .4s;}
-.sb-nav{flex:1;padding:8px 0;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:var(--text2);font-size:13px;border-left:3px solid transparent;transition:all .15s;}
-.nav-item:hover{background:var(--surface2);color:var(--text);}
-.nav-item.active{background:var(--surface2);color:var(--blue);border-left-color:var(--blue);}
-.nav-item svg{width:16px;height:16px;flex-shrink:0;}
-.sb-footer{padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-white);
+        }
 
-/* Cards */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;}
-.card-sm{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
-.section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+        .app {
+            min-height: 100vh;
+        }
 
-/* Grids */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;}
+        /* TOP NAVIGATION */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background-color: var(--bg-primary);
+            border-bottom: 2px solid var(--gold-primary);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
 
-/* Metric cards */
-.metric{background:var(--surface2);border-radius:10px;padding:12px 14px;}
-.metric-label{font-size:11px;color:var(--text3);margin-bottom:4px;}
-.metric-val{font-size:22px;font-weight:600;}
-.metric-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-right: 48px;
+            cursor: pointer;
+        }
 
-/* Forms */
-.field{display:flex;flex-direction:column;gap:5px;}
-.field label{font-size:12px;color:var(--text2);}
-.field input,.field select{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-size:13px;padding:7px 10px;height:36px;width:100%;}
-.field input:focus,.field select:focus{outline:none;border-color:var(--blue);}
-.field select option{background:var(--surface2);}
-.input-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+            flex: 1;
+        }
 
-/* Buttons */
-.btn{padding:8px 16px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .12s;}
-.btn:hover{background:var(--surface3);}
-.btn:active{transform:scale(.98);}
-.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff;}
-.btn-primary:hover{background:#1f67c5;}
-.btn-danger{border-color:var(--red);color:var(--red);background:transparent;}
-.btn-danger:hover{background:#2a1010;}
-.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-/* Attr bars */
-.attr-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);}
-.attr-row:last-child{border-bottom:none;}
-.attr-name{font-size:12px;color:var(--text2);width:160px;flex-shrink:0;}
-.bar-wrap{flex:1;height:5px;background:var(--surface3);border-radius:3px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:3px;transition:width .4s;}
-.attr-val{font-size:13px;font-weight:600;min-width:28px;text-align:right;}
+        .nav-link:hover {
+            color: var(--gold-primary);
+            background-color: var(--bg-tertiary);
+        }
 
-/* Badges */
-.badge-pill{font-size:11px;padding:3px 9px;border-radius:10px;font-weight:500;display:inline-block;}
-.b-bronze{background:#2a1a05;color:#e8a050;border:1px solid #5a3010;}
-.b-silver{background:#1e1e1e;color:#c0c0c0;border:1px solid #555;}
-.b-gold{background:#2a1f00;color:#f0c030;border:1px solid #6a4f00;}
-.b-hof{background:#2a0a0a;color:#f08080;border:1px solid #7a2020;}
-.b-locked{background:var(--surface2);color:var(--text3);border:1px solid var(--border);font-size:10px;}
+        .nav-link.active {
+            color: var(--gold-primary);
+            background-color: var(--bg-tertiary);
+            border-bottom: 3px solid var(--gold-primary);
+        }
 
-/* Tier rows */
-.tier-row{display:grid;grid-template-columns:60px 1fr auto;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:6px;align-items:stretch;}
-.tier-row.active-tier{border-color:var(--blue);}
-.tier-ovr{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;padding:10px 6px;background:var(--surface2);color:var(--text2);}
-.tier-row.active-tier .tier-ovr{background:#0c1e35;color:var(--blue);}
-.tier-desc{padding:10px 12px;}
-.tier-name{font-size:13px;font-weight:500;}
-.tier-detail{font-size:11px;color:var(--text3);margin-top:2px;}
-.tier-mins{display:flex;align-items:center;justify-content:center;padding:10px 14px;font-size:13px;font-weight:600;white-space:nowrap;}
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: auto;
+        }
 
-/* Game log */
-.game-entry{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;margin-bottom:6px;}
-.game-date{font-size:11px;color:var(--text3);}
-.gstats{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
-.gs{font-size:11px;color:var(--text2);}
-.gs strong{color:var(--text);font-weight:600;}
-.xp-pill{background:#0c1e35;color:var(--blue);border:1px solid #1a3a6a;font-size:11px;font-weight:600;padding:3px 9px;border-radius:10px;white-space:nowrap;}
-.sp-pill{font-size:11px;color:var(--text3);}
+        .save-btn {
+            background-color: var(--gold-primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 10px 18px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
 
-/* Skill cards */
-.skill-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
-.skill-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.skill-name{font-size:13px;font-weight:500;}
-.skill-cat{font-size:10px;color:var(--text3);margin-top:1px;}
-.skill-val{font-size:20px;font-weight:600;}
-.skill-track{height:5px;background:var(--surface3);border-radius:3px;overflow:hidden;margin-bottom:8px;}
-.skill-fill{height:100%;border-radius:3px;transition:width .4s;}
-.skill-footer{display:flex;justify-content:space-between;align-items:center;}
-.skill-cost{font-size:11px;color:var(--text3);}
-.btn-up{padding:4px 12px;font-size:11px;font-weight:600;border-radius:6px;border:1px solid var(--blue);color:var(--blue);background:transparent;cursor:pointer;transition:background .12s;}
-.btn-up:hover{background:#0c1e35;}
-.btn-up:disabled{opacity:.3;cursor:not-allowed;}
+        .save-btn:hover {
+            background-color: var(--gold-hover);
+            transform: translateY(-2px);
+        }
 
-/* Rank page */
-.rank-hud{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;gap:14px;}
-.rank-ovr{font-size:40px;font-weight:700;min-width:58px;text-align:center;line-height:1;}
-.rank-slider-col{flex:1;}
-.rank-slider-label{font-size:11px;color:var(--text3);margin-bottom:6px;}
-.rank-badge{padding:5px 14px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap;}
-.rank-prog-wrap{height:5px;background:var(--surface3);border-radius:3px;overflow:hidden;border:1px solid var(--border);margin-top:7px;}
-.rank-prog-fill{height:100%;border-radius:3px;transition:width .4s;}
-input[type=range]{width:100%;accent-color:var(--blue);}
+        .save-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            min-width: 90px;
+        }
 
-/* Build page */
-.build-attr-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+        .save-status.saved {
+            color: #10B981;
+        }
 
-/* Toast */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:999;}
-.toast.show{opacity:1;}
+        .save-status.saving {
+            color: var(--gold-primary);
+            animation: spin 1.5s linear infinite;
+        }
 
-/* XP breakdown */
-.xp-breakdown{background:var(--surface2);border-radius:8px;border:1px solid var(--border);padding:10px 14px;margin-top:10px;font-size:12px;color:var(--text2);display:none;}
-.xp-brow{display:flex;justify-content:space-between;padding:2px 0;}
-.xp-btotal{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--border);margin-top:4px;font-weight:600;color:var(--text);}
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
-/* Result banner */
-.result-banner{background:var(--surface2);border:1px solid #1a3a6a;border-radius:10px;padding:12px 16px;margin-top:10px;display:none;}
-.rb-xp{font-size:26px;font-weight:700;color:var(--blue);}
-.rb-sp{font-size:12px;color:var(--text3);margin-top:2px;}
+        .settings-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gold-primary);
+        }
 
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;}
-::-webkit-scrollbar-track{background:var(--surface);}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+        /* MAIN CONTENT */
+        .main-content {
+            margin-top: 64px;
+            padding: 32px;
+            background-color: var(--bg-primary);
+        }
 
-/* Page header */
-.page-header{margin-bottom:20px;}
-.page-title{font-size:20px;font-weight:600;color:var(--text);}
-.page-sub{font-size:13px;color:var(--text3);margin-top:3px;}
+        /* DASHBOARD */
+        .dashboard-header {
+            display: grid;
+            grid-template-columns: 320px 1fr 280px;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
 
-/* Empty state */
-.empty{text-align:center;padding:32px;color:var(--text3);font-size:13px;}
+        .card {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--gold-primary);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
 
-/* Tip card */
-.tip-card{background:var(--surface2);border-radius:8px;padding:12px 14px;margin-bottom:8px;}
-.tip-head{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
-.tip-body{font-size:12px;color:var(--text2);line-height:1.5;}
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-white);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-@media(max-width:640px){
-  .sidebar{width:60px;}
-  .sb-logo,.sb-sub,.sb-pname,.sb-pos,.sb-ovr,.sb-xp,.sb-footer,.nav-label{display:none;}
-  .nav-item{justify-content:center;padding:12px;}
-  .page{padding:14px;}
-  .grid3,.input-row{grid-template-columns:1fr 1fr;}
-  .grid4{grid-template-columns:1fr 1fr;}
-}
-</style>
+        .player-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .overall {
+            text-align: center;
+        }
+
+        .overall-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .overall-value {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .position-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px;
+            background-color: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        .team-info {
+            text-align: center;
+        }
+
+        .team-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .team-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 12px;
+            background-color: var(--bg-tertiary);
+            border-radius: 4px;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .xp-card {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .xp-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .xp-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background-color: #334155;
+            border: 1px solid var(--gold-primary);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-primary) 0%, var(--gold-hover) 100%);
+            transition: width 0.3s;
+        }
+
+        /* ACTION BUTTONS */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .action-btn {
+            background-color: var(--gold-primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            min-height: 48px;
+        }
+
+        .action-btn:hover {
+            background-color: var(--gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255,215,0,0.3);
+        }
+
+        /* TABLES */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .games-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .games-table thead {
+            background-color: var(--bg-tertiary);
+            border-bottom: 2px solid var(--gold-primary);
+        }
+
+        .games-table th {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        .games-table td {
+            padding: 12px 8px;
+            font-size: 14px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+        }
+
+        .games-table tbody tr:hover {
+            background-color: rgba(255,215,0,0.05);
+        }
+
+        .result-w {
+            color: #10B981;
+            font-weight: 700;
+        }
+
+        .result-l {
+            color: #EF4444;
+            font-weight: 700;
+        }
+
+        .xp-earned {
+            color: var(--gold-primary);
+            font-weight: 700;
+        }
+
+        /* PAGE CONTENT */
+        .page-content {
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--gold-primary);
+            padding-bottom: 12px;
+        }
+
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .attribute-card {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--gold-primary);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .attribute-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 8px;
+        }
+
+        .attribute-level {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .attribute-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .attribute-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-primary) 0%, var(--gold-hover) 100%);
+        }
+
+        .upgrade-cost {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+
+        .upgrade-btn {
+            width: 100%;
+            background-color: var(--gold-primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 8px 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .upgrade-btn:hover {
+            background-color: var(--gold-hover);
+        }
+
+        .upgrade-btn:disabled {
+            background-color: #6B7280;
+            cursor: not-allowed;
+        }
+
+        /* BADGES GRID */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .badge-card {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--gold-primary);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .badge-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .badge-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-white);
+            margin-bottom: 4px;
+        }
+
+        .badge-tier {
+            font-size: 12px;
+            color: var(--gold-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .badge-progress {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+
+        /* FORM ELEMENTS */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: var(--bg-tertiary);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 4px;
+            color: var(--text-white);
+            font-size: 14px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 8px rgba(255,215,0,0.3);
+        }
+
+        .cost-display {
+            background-color: var(--bg-tertiary);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .cost-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .cost-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .spend-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .spend-section {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--gold-primary);
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-header {
+                grid-template-columns: 1fr;
+            }
+            .spend-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .attributes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="app">
+        <nav class="top-nav">
+            <div class="nav-logo">🏀 2K26 XP System</div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a class="nav-link active" onclick="navigateTo('dashboard')">Dashboard</a></li>
+                <li><a class="nav-link" onclick="navigateTo('attributes')">Attributes</a></li>
+                <li><a class="nav-link" onclick="navigateTo('badges')">Badges</a></li>
+                <li><a class="nav-link" onclick="navigateTo('goals')">Goals</a></li>
+                <li><a class="nav-link" onclick="navigateTo('stats')">Stats</a></li>
+                <li><a class="nav-link" onclick="navigateTo('spend')">Spend XP</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="save-btn" onclick="saveProgress()">💾 Save</button>
+                <div class="save-status saved" id="saveStatus">
+                    <span id="saveIcon">✓</span>
+                    <span id="saveText">Saved</span>
+                </div>
+                <button class="settings-btn">⚙️</button>
+            </div>
+        </nav>
 
-<div class="app-shell">
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="sb-header">
-      <div class="sb-logo">MyNBA 2K26</div>
-      <div class="sb-sub">Career XP Tracker</div>
-    </div>
-    <div class="sb-player">
-      <div class="sb-avatar" id="sbAvatar">MY</div>
-      <div>
-        <div class="sb-pname" id="sbName">My Player</div>
-        <div class="sb-pos" id="sbPos">PG · 6'7"</div>
-      </div>
-      <div class="sb-ovr" id="sbOvr">60</div>
-    </div>
-    <div class="sb-xp">
-      <div class="xp-label"><span>XP Progress</span><span id="sbXpFrac">0/500</span></div>
-      <div class="xp-track"><div class="xp-fill" id="sbXpBar" style="width:0%"></div></div>
-    </div>
-    <nav class="sb-nav">
-      <div class="nav-item active" onclick="goPage('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        <span class="nav-label">Dashboard</span>
-      </div>
-      <div class="nav-item" onclick="goPage('import')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <span class="nav-label">Import Game</span>
-      </div>
-      <div class="nav-item" onclick="goPage('skills')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        <span class="nav-label">Skills</span>
-      </div>
-      <div class="nav-item" onclick="goPage('log')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span class="nav-label">Game Log</span>
-      </div>
-      <div class="nav-item" onclick="goPage('rank')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 8 22 21 2 21 2 8"/><rect x="1" y="3" width="22" height="5"/><line x1="12" y1="12" x2="12" y2="17"/></svg>
-        <span class="nav-label">Player Rank</span>
-      </div>
-      <div class="nav-item" onclick="goPage('build')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M3 21v-1a9 9 0 0118 0v1"/></svg>
-        <span class="nav-label">My Build</span>
-      </div>
-      <div class="nav-item" onclick="goPage('setup')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 1 0 4.93 19.07 10 10 0 0 0 19.07 4.93"/></svg>
-        <span class="nav-label">Settings</span>
-      </div>
-    </nav>
-    <div class="sb-footer">v1.0 · Data saves locally</div>
-  </div>
-
-  <!-- Main content -->
-  <div class="main">
-
-    <!-- DASHBOARD -->
-    <div id="page-dashboard" class="page active">
-      <div class="page-header">
-        <div class="page-title">Dashboard</div>
-        <div class="page-sub" id="dashSub">2011 NBA Draft · End of bench</div>
-      </div>
-      <div class="grid4" style="margin-bottom:14px;">
-        <div class="metric"><div class="metric-label">Total XP</div><div class="metric-val" id="dXP" style="color:var(--blue)">0</div><div class="metric-sub">all time</div></div>
-        <div class="metric"><div class="metric-label">Skill points</div><div class="metric-val" id="dSP" style="color:var(--green)">0</div><div class="metric-sub">available</div></div>
-        <div class="metric"><div class="metric-label">Games played</div><div class="metric-val" id="dGP" style="color:var(--amber)">0</div><div class="metric-sub">this career</div></div>
-        <div class="metric"><div class="metric-label">Overall</div><div class="metric-val" id="dOVR" style="color:var(--gray)">60</div><div class="metric-sub" id="dTierName">End of bench</div></div>
-      </div>
-      <div class="grid2">
-        <div class="card">
-          <div class="section-label">Career averages</div>
-          <div id="dashAvgs"><div class="empty">Log games to see averages.</div></div>
-        </div>
-        <div class="card">
-          <div class="section-label">Current rank</div>
-          <div id="dashRankCard"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="section-label">Last 5 games</div>
-        <div id="dashRecent"><div class="empty">No games yet.</div></div>
-      </div>
+        <main class="main-content" id="mainContent"></main>
     </div>
 
-    <!-- IMPORT GAME -->
-    <div id="page-import" class="page">
-      <div class="page-header">
-        <div class="page-title">Import game stats</div>
-        <div class="page-sub">Enter your stats to earn XP and skill points</div>
-      </div>
-      <div class="card">
-        <div class="section-label" style="margin-bottom:12px">Box score</div>
-        <div class="input-row">
-          <div class="field"><label>Points</label><input type="number" id="iPts" min="0" max="100" placeholder="0"></div>
-          <div class="field"><label>Rebounds</label><input type="number" id="iReb" min="0" max="30" placeholder="0"></div>
-          <div class="field"><label>Assists</label><input type="number" id="iAst" min="0" max="30" placeholder="0"></div>
-        </div>
-        <div class="input-row">
-          <div class="field"><label>Steals</label><input type="number" id="iStl" min="0" max="10" placeholder="0"></div>
-          <div class="field"><label>Blocks</label><input type="number" id="iBlk" min="0" max="10" placeholder="0"></div>
-          <div class="field"><label>Turnovers</label><input type="number" id="iTov" min="0" max="20" placeholder="0"></div>
-        </div>
-        <div class="input-row">
-          <div class="field"><label>FG% (0–100)</label><input type="number" id="iFgp" min="0" max="100" placeholder="45"></div>
-          <div class="field"><label>3PT made</label><input type="number" id="i3pt" min="0" max="15" placeholder="0"></div>
-          <div class="field"><label>Result</label><select id="iResult"><option value="W">Win</option><option value="L">Loss</option></select></div>
-        </div>
-        <div id="xpBreakdown" class="xp-breakdown"></div>
-        <div id="resultBanner" class="result-banner">
-          <div style="font-size:12px;color:var(--text3);margin-bottom:3px;">XP earned this game</div>
-          <div class="rb-xp" id="bannerXP">+0 XP</div>
-          <div class="rb-sp" id="bannerSP"></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn" onclick="previewXP()">Preview XP</button>
-          <button class="btn btn-primary" onclick="importGame()">Log game + XP</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="section-label">XP formula (edit in Settings)</div>
-        <div id="formulaDisplay" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-      </div>
-    </div>
-
-    <!-- SKILLS -->
-    <div id="page-skills" class="page">
-      <div class="page-header">
-        <div class="page-title">Skill points</div>
-        <div class="page-sub">Earn 1 SP per 100 XP · spend on attributes</div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        <div>
-          <div style="font-size:11px;color:var(--text3)">Available skill points</div>
-          <div style="font-size:24px;font-weight:700;color:var(--text)" id="skillSP">0 SP</div>
-        </div>
-        <div style="margin-left:auto;font-size:12px;color:var(--text3);text-align:right;line-height:1.6">Upgrades cost more<br>as attribute grows</div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;" id="skillCatFilter">
-        <button class="btn btn-primary" onclick="filterSkills('all')">All</button>
-        <button class="btn" onclick="filterSkills('athletic')">Athletic</button>
-        <button class="btn" onclick="filterSkills('offense')">Offense</button>
-        <button class="btn" onclick="filterSkills('defense')">Defense</button>
-      </div>
-      <div class="grid2" id="skillGrid"></div>
-    </div>
-
-    <!-- GAME LOG -->
-    <div id="page-log" class="page">
-      <div class="page-header">
-        <div class="page-title">Game log</div>
-        <div class="page-sub" id="logSub">0 games recorded</div>
-      </div>
-      <div id="gameLog"><div class="empty">No games yet. Import your first game!</div></div>
-    </div>
-
-    <!-- PLAYER RANK -->
-    <div id="page-rank" class="page">
-      <div class="page-header">
-        <div class="page-title">Player rank reference</div>
-        <div class="page-sub">Drag to see rotation minutes and badges at any overall</div>
-      </div>
-      <div class="rank-hud">
-        <div>
-          <div style="font-size:11px;color:var(--text3);margin-bottom:2px;">Overall</div>
-          <div class="rank-ovr" id="rankOvr" style="color:var(--gray);">75</div>
-        </div>
-        <div class="rank-slider-col">
-          <div class="rank-slider-label">Slide to explore any overall rating</div>
-          <input type="range" min="60" max="99" value="75" step="1" id="rankSlider">
-          <div class="rank-prog-wrap"><div class="rank-prog-fill" id="rankProg" style="width:37%;"></div></div>
-        </div>
-        <div class="rank-badge" id="rankBadge">Rotation player</div>
-      </div>
-      <div class="grid3" style="margin-bottom:14px;">
-        <div class="metric"><div class="metric-label">Minutes/game</div><div class="metric-val" id="rMins" style="color:var(--blue)">22</div><div class="metric-sub" id="rMinsDesc">Coming off bench</div></div>
-        <div class="metric"><div class="metric-label">Contract tier</div><div class="metric-val" style="font-size:16px;color:var(--amber)" id="rContract">Mid-level</div><div class="metric-sub" id="rContractDesc">Team option</div></div>
-        <div class="metric"><div class="metric-label">Badge slots</div><div class="metric-val" id="rSlots" style="color:var(--green)">12</div><div class="metric-sub" id="rSlotsDesc">Up to Gold</div></div>
-      </div>
-      <div class="card" style="margin-bottom:14px;">
-        <div class="section-label">Badges at this overall</div>
-        <div id="rankBadges"></div>
-      </div>
-      <div class="card">
-        <div class="section-label">All tiers</div>
-        <div id="allTiers"></div>
-      </div>
-    </div>
-
-    <!-- MY BUILD -->
-    <div id="page-build" class="page">
-      <div class="page-header">
-        <div class="page-title">My build</div>
-        <div class="page-sub" id="buildSub">Starting 60 OVR attributes</div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:16px;">
-        <div style="width:52px;height:52px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;" id="buildAvatar">MY</div>
-        <div style="flex:1;">
-          <div style="font-size:16px;font-weight:600;" id="buildName">My Player</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px;" id="buildInfo">PG · 6'7" · 2011 NBA Draft</div>
-        </div>
-        <div style="width:52px;height:52px;border-radius:50%;border:2px solid var(--gray);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
-          <div style="font-size:22px;font-weight:700;color:var(--gray);line-height:1;" id="buildOvr">60</div>
-          <div style="font-size:9px;color:var(--text3);">OVR</div>
-        </div>
-      </div>
-      <div class="grid2">
-        <div>
-          <div class="build-attr-card">
-            <div class="section-label">Finishing</div>
-            <div id="bFinishing"></div>
-          </div>
-          <div class="build-attr-card">
-            <div class="section-label">Shooting</div>
-            <div id="bShooting"></div>
-          </div>
-          <div class="build-attr-card">
-            <div class="section-label">Playmaking</div>
-            <div id="bPlaymaking"></div>
-          </div>
-        </div>
-        <div>
-          <div class="build-attr-card">
-            <div class="section-label">Defense / Rebounding</div>
-            <div id="bDefense"></div>
-          </div>
-          <div class="build-attr-card">
-            <div class="section-label">Physicals</div>
-            <div id="bPhysicals"></div>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:12px;">
-        <div class="section-label">Starting badges</div>
-        <div id="buildBadges"></div>
-      </div>
-      <div class="card">
-        <div class="section-label">Build tips</div>
-        <div class="grid2" id="buildTips"></div>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div id="page-setup" class="page">
-      <div class="page-header">
-        <div class="page-title">Settings</div>
-        <div class="page-sub">Configure your player and XP formula</div>
-      </div>
-      <div class="card">
-        <div class="section-label" style="margin-bottom:12px">Player profile</div>
-        <div class="input-row">
-          <div class="field"><label>Player name</label><input type="text" id="sName" placeholder="My Player"></div>
-          <div class="field"><label>Position</label><select id="sPos"><option>PG</option><option>SG</option><option>SF</option><option>PF</option><option>C</option></select></div>
-          <div class="field"><label>Height</label><select id="sHeight"><option>6'0"</option><option>6'1"</option><option>6'2"</option><option>6'3"</option><option>6'4"</option><option>6'5"</option><option>6'6"</option><option value="6'7&quot;" selected>6'7"</option><option>6'8"</option><option>6'9"</option><option>6'10"</option><option>7'0"</option><option>7'1"</option><option>7'3"</option></select></div>
-        </div>
-        <div class="input-row">
-          <div class="field"><label>Draft year</label><input type="number" id="sDraftYear" value="2011" min="2000" max="2030"></div>
-          <div class="field"><label>Starting overall</label><input type="number" id="sStartOvr" min="55" max="75" value="60"></div>
-        </div>
-        <div class="btn-row"><button class="btn btn-primary" onclick="saveProfile()">Save profile</button></div>
-      </div>
-      <div class="card">
-        <div class="section-label" style="margin-bottom:12px">XP formula (XP earned per stat)</div>
-        <div class="input-row">
-          <div class="field"><label>Per point</label><input type="number" id="fPts" value="3"></div>
-          <div class="field"><label>Per rebound</label><input type="number" id="fReb" value="4"></div>
-          <div class="field"><label>Per assist</label><input type="number" id="fAst" value="5"></div>
-        </div>
-        <div class="input-row">
-          <div class="field"><label>Per steal</label><input type="number" id="fStl" value="8"></div>
-          <div class="field"><label>Per block</label><input type="number" id="fBlk" value="8"></div>
-          <div class="field"><label>Per turnover (−)</label><input type="number" id="fTov" value="5"></div>
-        </div>
-        <div class="input-row">
-          <div class="field"><label>Per 3PT made</label><input type="number" id="f3pt" value="6"></div>
-          <div class="field"><label>FG% ≥50% bonus</label><input type="number" id="fFgb" value="20"></div>
-          <div class="field"><label>Win bonus</label><input type="number" id="fWin" value="50"></div>
-        </div>
-        <div class="btn-row"><button class="btn btn-primary" onclick="saveFormula()">Save formula</button></div>
-      </div>
-      <div class="card">
-        <div class="section-label" style="margin-bottom:8px">Reset career</div>
-        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Clears all XP, game history, and skill upgrades. Cannot be undone.</p>
-        <div class="btn-row"><button class="btn btn-danger" onclick="resetCareer()">Reset career</button></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ─── DATA ───────────────────────────────────────────────
-const SKILL_COST = [1,1,2,2,3,4,5,7,10,15,20,30];
-
-const SKILLS = [
-  {id:'speed',name:'Speed',cat:'athletic'},
-  {id:'accel',name:'Acceleration',cat:'athletic'},
-  {id:'strength',name:'Strength',cat:'athletic'},
-  {id:'vertical',name:'Vertical',cat:'athletic'},
-  {id:'ball_handle',name:'Ball Handle',cat:'offense'},
-  {id:'passing',name:'Pass Accuracy',cat:'offense'},
-  {id:'mid_range',name:'Mid-Range',cat:'offense'},
-  {id:'three_pt',name:'Three-Point',cat:'offense'},
-  {id:'driving_layup',name:'Driving Layup',cat:'offense'},
-  {id:'post_control',name:'Post Control',cat:'offense'},
-  {id:'perimeter_def',name:'Perimeter D',cat:'defense'},
-  {id:'interior_def',name:'Interior D',cat:'defense'},
-  {id:'steal',name:'Steal',cat:'defense'},
-  {id:'block',name:'Block',cat:'defense'},
-];
-
-const BASE_ATTRS = {
-  finishing:[
-    {name:'Close shot',val:52},{name:'Driving layup',val:58},{name:'Driving dunk',val:54},
-    {name:'Standing dunk',val:38},{name:'Post control',val:42}
-  ],
-  shooting:[
-    {name:'Mid-range shot',val:45},{name:'Three-point shot',val:50},{name:'Free throw',val:55}
-  ],
-  playmaking:[
-    {name:'Pass accuracy',val:58},{name:'Ball handle',val:60},{name:'Speed with ball',val:58}
-  ],
-  defense:[
-    {name:'Interior defense',val:44},{name:'Perimeter defense',val:55},{name:'Steal',val:52},
-    {name:'Block',val:46},{name:'Off. rebound',val:40},{name:'Def. rebound',val:48}
-  ],
-  physicals:[
-    {name:'Speed',val:64},{name:'Acceleration',val:62},{name:'Strength',val:50},
-    {name:'Vertical',val:58},{name:'Stamina',val:82},{name:'Hustle',val:70},{name:'Durability',val:75}
-  ]
-};
-
-const TIERS = [
-  {min:60,max:64,name:'End of bench',color:'#888780',bg:'#1c1c1a',tc:'#aaa',mins:4,minsDesc:'Garbage time only',contract:'Two-way',contractDesc:'Minimum salary',slots:4,slotsDesc:'Bronze only',badges:{Playmaking:['Speed Booster (Bronze)','Handles for Days (Bronze)'],Defense:['Menace (Bronze)']}},
-  {min:65,max:69,name:'Fringe roster',color:'#5f5e5a',bg:'#1a1a18',tc:'#aaa',mins:10,minsDesc:'Spot minutes',contract:'Minimum',contractDesc:'Non-guaranteed',slots:6,slotsDesc:'Bronze + 1 Silver',badges:{Finishing:['Acrobat (Bronze)','Fearless Finisher (Bronze)'],Shooting:['Catch and Shoot (Silver)'],Playmaking:['Speed Booster (Bronze)','Handles for Days (Bronze)'],Defense:['Clamps (Bronze)','Menace (Bronze)','Interceptor (Bronze)']}},
-  {min:70,max:74,name:'Bench contributor',color:'#2a78d6',bg:'#0c1e35',tc:'#5ba3f5',mins:16,minsDesc:'6th–8th man',contract:'Veteran minimum',contractDesc:'1-year deal',slots:9,slotsDesc:'Up to Silver',badges:{Finishing:['Acrobat (Silver)','Fearless Finisher (Silver)'],Shooting:['Catch and Shoot (Silver)','Corner Specialist (Silver)','Hot Zone Hunter (Bronze)'],Playmaking:['Speed Booster (Silver)','Handles for Days (Silver)','Dimer (Bronze)'],Defense:['Clamps (Silver)','Menace (Silver)','Interceptor (Silver)','Anchor (Bronze)']}},
-  {min:75,max:79,name:'Rotation player',color:'#2a78d6',bg:'#0c1e35',tc:'#5ba3f5',mins:22,minsDesc:'Coming off bench',contract:'Mid-level',contractDesc:'Team option',slots:12,slotsDesc:'Up to Gold',badges:{Finishing:['Acrobat (Gold)','Fearless Finisher (Gold)','Backdown Punisher (Silver)'],Shooting:['Catch and Shoot (Gold)','Corner Specialist (Gold)','Hot Zone Hunter (Silver)','Limitless Range (Bronze)'],Playmaking:['Speed Booster (Gold)','Handles for Days (Gold)','Dimer (Silver)','Floor General (Bronze)'],Defense:['Clamps (Gold)','Menace (Gold)','Interceptor (Gold)','Anchor (Silver)','Challenger (Bronze)']}},
-  {min:80,max:84,name:'Starter',color:'#1baf7a',bg:'#092a1e',tc:'#2dcc8e',mins:28,minsDesc:'Full starting role',contract:'Standard',contractDesc:'3-year / $18M',slots:15,slotsDesc:'Gold + 1 HoF',badges:{Finishing:['Acrobat (Gold)','Fearless Finisher (Gold)','Slithery (Gold)','Backdown Punisher (Gold)','Posterizer (Bronze)'],Shooting:['Catch and Shoot (Gold)','Corner Specialist (Gold)','Hot Zone Hunter (Gold)','Limitless Range (Silver)','Middy Magician (Bronze)'],Playmaking:['Speed Booster (Gold)','Handles for Days (Gold)','Dimer (Gold)','Floor General (Silver)','Needle Threader (Bronze)'],Defense:['Clamps (Gold)','Menace (Gold)','Interceptor (Gold)','Anchor (Gold)','Challenger (Silver)','Brick Wall (Bronze)']}},
-  {min:85,max:89,name:'Star player',color:'#eda100',bg:'#2a1f00',tc:'#f0c030',mins:32,minsDesc:'Star-level load',contract:'Max (near)',contractDesc:'4-year / $140M',slots:18,slotsDesc:'Gold + 3 HoF',badges:{Finishing:['Acrobat (HoF)','Fearless Finisher (Gold)','Slithery (Gold)','Backdown Punisher (Gold)','Dream Shake (Gold)','Posterizer (Silver)'],Shooting:['Catch and Shoot (HoF)','Corner Specialist (Gold)','Hot Zone Hunter (Gold)','Limitless Range (Gold)','Middy Magician (Silver)','Agent 3 (Bronze)'],Playmaking:['Speed Booster (Gold)','Handles for Days (HoF)','Dimer (Gold)','Floor General (Gold)','Needle Threader (Silver)'],Defense:['Clamps (HoF)','Menace (Gold)','Interceptor (Gold)','Anchor (Gold)','Challenger (Gold)','Brick Wall (Silver)']}},
-  {min:90,max:94,name:'Franchise cornerstone',color:'#e24b4a',bg:'#2a0a0a',tc:'#f08080',mins:36,minsDesc:'Franchise cornerstone',contract:'Supermax',contractDesc:'5-year / $250M+',slots:22,slotsDesc:'Gold + 6 HoF',badges:{Finishing:['Acrobat (HoF)','Fearless Finisher (HoF)','Slithery (Gold)','Backdown Punisher (HoF)','Dream Shake (Gold)','Posterizer (Gold)'],Shooting:['Catch and Shoot (HoF)','Corner Specialist (HoF)','Hot Zone Hunter (HoF)','Limitless Range (Gold)','Middy Magician (Gold)','Agent 3 (Silver)','Green Machine (Bronze)'],Playmaking:['Speed Booster (HoF)','Handles for Days (HoF)','Dimer (HoF)','Floor General (Gold)','Needle Threader (Gold)','Bail Out (Silver)'],Defense:['Clamps (HoF)','Menace (HoF)','Interceptor (HoF)','Anchor (Gold)','Challenger (Gold)','Brick Wall (Gold)','Pogo Stick (Silver)']}},
-  {min:95,max:99,name:'All-time great',color:'#534ab7',bg:'#1a1535',tc:'#9d95e8',mins:40,minsDesc:'Full-game closer',contract:'Legacy max',contractDesc:'Legacy max / $300M+',slots:28,slotsDesc:'Full HoF access',badges:{Finishing:['Acrobat (HoF)','Fearless Finisher (HoF)','Slithery (HoF)','Backdown Punisher (HoF)','Dream Shake (HoF)','Posterizer (HoF)','Dropstepper (HoF)'],Shooting:['Catch and Shoot (HoF)','Corner Specialist (HoF)','Hot Zone Hunter (HoF)','Limitless Range (HoF)','Middy Magician (HoF)','Agent 3 (HoF)','Green Machine (Gold)','Deadeye (HoF)'],Playmaking:['Speed Booster (HoF)','Handles for Days (HoF)','Dimer (HoF)','Floor General (HoF)','Needle Threader (HoF)','Bail Out (HoF)','Hyperdrive (HoF)'],Shooting2:['Unpluckable (Gold)'],Defense:['Clamps (HoF)','Menace (HoF)','Interceptor (HoF)','Anchor (HoF)','Challenger (HoF)','Brick Wall (HoF)','Pogo Stick (HoF)','Work Horse (HoF)']}}
-];
-
-const BUILD_TIPS = [
-  {h:'Use your size',b:'At 6\'7" you\'re a mismatch PG. Post up smaller guards — even with a 42 post control, your height wins physicality battles.'},
-  {h:'Speed is your best weapon',b:'64 speed and 62 acceleration lets you blow by most 60–65 OVR defenders. Attack the paint in your 4 minutes.'},
-  {h:'Avoid mid-range early',b:'Mid-range is 45 — your worst skill stat. Stick to layups, drives, and corner threes until you grind shooting.'},
-  {h:'First SP priorities',b:'Ball Handle → Pass Accuracy → Speed. These unlock better badges and make you immediately useful.'},
-  {h:'Earn XP the smart way',b:'Steals (8 XP) and assists (5 XP) give the most value per action. Play passing lanes and rack up dimes.'},
-  {h:'Target: 65 OVR first',b:'65 OVR unlocks Acrobat, Clamps, and Catch and Shoot badges — and jumps you to 10+ minutes per game.'},
-];
-
-// ─── STATE ──────────────────────────────────────────────
-let S = {
-  playerName:'My Player', position:'PG', height:"6'7\"", draftYear:2011,
-  startingOvr:60, totalXP:0, spSpent:0, games:[], skills:{},
-  formula:{pts:3,reb:4,ast:5,stl:8,blk:8,tov:5,tpt:6,fgb:20,win:50}
-};
-
-function load(){try{const d=localStorage.getItem('nba2k26_career');if(d)S=JSON.parse(d);}catch(e){}}
-function save(){try{localStorage.setItem('nba2k26_career',JSON.stringify(S));}catch(e){}}
-
-// ─── COMPUTED ────────────────────────────────────────────
-function sp(){return Math.max(0,Math.floor(S.totalXP/100)-S.spSpent);}
-function skillLvl(id){return(S.skills[id]||[]).length;}
-function skillVal(id){return Math.min(99,S.startingOvr+skillLvl(id));}
-function nextCost(id){const l=skillLvl(id);return l<SKILL_COST.length?SKILL_COST[l]:null;}
-function getTier(ovr){return TIERS.find(t=>ovr>=t.min&&ovr<=t.max)||TIERS[0];}
-function overall(){const ups=Object.values(S.skills).reduce((a,arr)=>a+arr.length,0);return Math.min(99,S.startingOvr+Math.floor(ups*0.5));}
-function xpThisLevel(){return S.totalXP%500;}
-function calcXP(s){
-  const f=S.formula;
-  const bd={'Points':s.pts*f.pts,'Rebounds':s.reb*f.reb,'Assists':s.ast*f.ast,'Steals':s.stl*f.stl,'Blocks':s.blk*f.blk,'Turnovers (−)':-(s.tov*f.tov),'3PT made':s.tpt*f.tpt,'FG% bonus':s.fgp>=50?f.fgb:0,'Win bonus':s.result==='W'?f.win:0};
-  return{bd,total:Math.max(0,Object.values(bd).reduce((a,b)=>a+b,0))};
-}
-function barColor(v){if(v>=70)return'var(--green)';if(v>=58)return'var(--blue)';if(v>=48)return'var(--amber)';return'var(--red)';}
-function badgeClass(b){if(b.includes('HoF'))return'b-hof';if(b.includes('Gold'))return'b-gold';if(b.includes('Silver'))return'b-silver';return'b-bronze';}
-function avgStat(key){if(!S.games.length)return 0;return(S.games.reduce((a,g)=>a+(g[key]||0),0)/S.games.length).toFixed(1);}
-
-// ─── SIDEBAR ─────────────────────────────────────────────
-function updateSidebar(){
-  const ovr=overall();
-  const initials=S.playerName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()||'MY';
-  document.getElementById('sbAvatar').textContent=initials;
-  document.getElementById('sbName').textContent=S.playerName;
-  document.getElementById('sbPos').textContent=S.position+' · '+S.height;
-  document.getElementById('sbOvr').textContent=ovr;
-  document.getElementById('sbOvr').style.color=getTier(ovr).color;
-  const pct=Math.round((xpThisLevel()/500)*100);
-  document.getElementById('sbXpBar').style.width=pct+'%';
-  document.getElementById('sbXpFrac').textContent=xpThisLevel()+'/500';
-}
-
-// ─── NAVIGATION ──────────────────────────────────────────
-function goPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  const pages=['dashboard','import','skills','log','rank','build','setup'];
-  const navItems=document.querySelectorAll('.nav-item');
-  const idx=pages.indexOf(id);
-  if(idx>=0)navItems[idx].classList.add('active');
-  if(id==='dashboard')renderDashboard();
-  if(id==='skills')renderSkills();
-  if(id==='log')renderLog();
-  if(id==='rank')renderRankPage(75);
-  if(id==='build')renderBuild();
-  if(id==='import')renderFormulaDisplay();
-  if(id==='setup')syncSetup();
-}
-
-// ─── DASHBOARD ───────────────────────────────────────────
-function renderDashboard(){
-  const ovr=overall();
-  const tier=getTier(ovr);
-  document.getElementById('dXP').textContent=S.totalXP.toLocaleString();
-  document.getElementById('dSP').textContent=sp();
-  document.getElementById('dGP').textContent=S.games.length;
-  document.getElementById('dOVR').textContent=ovr;
-  document.getElementById('dOVR').style.color=tier.color;
-  document.getElementById('dTierName').textContent=tier.name;
-  document.getElementById('dashSub').textContent=S.draftYear+' NBA Draft · '+tier.name;
-
-  // averages
-  if(S.games.length){
-    document.getElementById('dashAvgs').innerHTML=`
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-        ${[['PTS',avgStat('pts')],['REB',avgStat('reb')],['AST',avgStat('ast')],['STL',avgStat('stl')],['BLK',avgStat('blk')],['TOV',avgStat('tov')]].map(([l,v])=>`<div style="text-align:center;padding:8px;background:var(--surface2);border-radius:8px;"><div style="font-size:18px;font-weight:600;color:var(--text)">${v}</div><div style="font-size:10px;color:var(--text3)">${l}</div></div>`).join('')}
-      </div>`;
-  } else {
-    document.getElementById('dashAvgs').innerHTML='<div class="empty">Log games to see averages.</div>';
-  }
-
-  // rank card
-  document.getElementById('dashRankCard').innerHTML=`
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-      <div style="font-size:32px;font-weight:700;color:${tier.color}">${ovr}</div>
-      <div><div style="font-size:14px;font-weight:500">${tier.name}</div><div style="font-size:11px;color:var(--text3)">${tier.mins} min/game · ${tier.contract}</div></div>
-    </div>
-    <div style="font-size:12px;color:var(--text2);padding:8px;background:var(--surface2);border-radius:6px;">${tier.slots} badge slots · ${tier.slotsDesc}</div>`;
-
-  // recent
-  if(S.games.length){
-    const recent=[...S.games].reverse().slice(0,5);
-    document.getElementById('dashRecent').innerHTML=recent.map((g,i)=>`
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);">
-        <div>
-          <span style="font-size:12px;color:var(--text2)">Game ${S.games.length-i}</span>
-          <span style="margin-left:8px;font-size:11px;color:${g.result==='W'?'var(--green)':'var(--red)'}">${g.result==='W'?'Win':'Loss'}</span>
-        </div>
-        <div style="font-size:12px;color:var(--text2)">${g.pts}pts ${g.reb}reb ${g.ast}ast</div>
-        <div class="xp-pill">+${g.xp} XP</div>
-      </div>`).join('');
-  } else {
-    document.getElementById('dashRecent').innerHTML='<div class="empty">No games yet.</div>';
-  }
-}
-
-// ─── IMPORT ──────────────────────────────────────────────
-function getInputStats(){
-  return{pts:+document.getElementById('iPts').value||0,reb:+document.getElementById('iReb').value||0,ast:+document.getElementById('iAst').value||0,stl:+document.getElementById('iStl').value||0,blk:+document.getElementById('iBlk').value||0,tov:+document.getElementById('iTov').value||0,fgp:+document.getElementById('iFgp').value||0,tpt:+document.getElementById('i3pt').value||0,result:document.getElementById('iResult').value};
-}
-function previewXP(){
-  const s=getInputStats();const{bd,total}=calcXP(s);
-  const el=document.getElementById('xpBreakdown');el.style.display='block';
-  el.innerHTML=Object.entries(bd).filter(([,v])=>v!==0).map(([k,v])=>`<div class="xp-brow"><span>${k}</span><span style="color:${v<0?'var(--red)':'var(--text)'}">${v>0?'+':''}${v} XP</span></div>`).join('')+`<div class="xp-btotal"><span>Total</span><span style="color:var(--blue)">+${total} XP</span></div>`;
-  const rb=document.getElementById('resultBanner');rb.style.display='block';
-  document.getElementById('bannerXP').textContent='+'+total+' XP';
-  const newSP=Math.floor((S.totalXP+total)/100)-Math.floor(S.totalXP/100);
-  document.getElementById('bannerSP').textContent=newSP>0?'+'+newSP+' SP unlocked this game':'No new SP this game';
-}
-function importGame(){
-  const s=getInputStats();const{total}=calcXP(s);
-  const now=new Date();
-  S.games.push({...s,xp:total,date:now.toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'2-digit'})});
-  S.totalXP+=total;save();updateSidebar();
-  toast('+'+total+' XP earned! Game logged.');
-  ['iPts','iReb','iAst','iStl','iBlk','iTov','iFgp','i3pt'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('xpBreakdown').style.display='none';
-  document.getElementById('resultBanner').style.display='none';
-}
-function renderFormulaDisplay(){
-  const f=S.formula;
-  const tags=[['PTS',f.pts],['REB',f.reb],['AST',f.ast],['STL',f.stl],['BLK',f.blk],['TOV (−)',f.tov],['3PM',f.tpt],['FG%≥50',f.fgb],['Win',f.win]];
-  document.getElementById('formulaDisplay').innerHTML=tags.map(([l,v])=>`<div style="background:var(--surface2);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text2)">${l} <strong style="color:var(--text)">${v} XP</strong></div>`).join('');
-}
-
-// ─── SKILLS ──────────────────────────────────────────────
-let skillFilter='all';
-function filterSkills(cat){
-  skillFilter=cat;
-  document.querySelectorAll('#skillCatFilter .btn').forEach(b=>b.classList.remove('btn-primary'));
-  event.target.classList.add('btn-primary');
-  renderSkills();
-}
-function renderSkills(){
-  document.getElementById('skillSP').textContent=sp()+' SP';
-  const avail=sp();
-  const list=skillFilter==='all'?SKILLS:SKILLS.filter(s=>s.cat===skillFilter);
-  const catColor={athletic:'var(--amber)',offense:'var(--blue)',defense:'var(--green)'};
-  document.getElementById('skillGrid').innerHTML=list.map(sk=>{
-    const val=skillVal(sk.id);const lvl=skillLvl(sk.id);const cost=nextCost(sk.id);
-    const pct=Math.round(((val-S.startingOvr)/(99-S.startingOvr))*100);
-    const can=cost!==null&&avail>=cost;const maxed=cost===null;
-    const c=catColor[sk.cat];
-    return`<div class="skill-card">
-      <div class="skill-header">
-        <div><div class="skill-name">${sk.name}</div><div class="skill-cat">${sk.cat} · Lvl ${lvl}</div></div>
-        <div class="skill-val" style="color:${c}">${val}</div>
-      </div>
-      <div class="skill-track"><div class="skill-fill" style="width:${Math.max(0,Math.min(100,pct))}%;background:${c}"></div></div>
-      <div class="skill-footer">
-        <div class="skill-cost">${maxed?'Maxed out':cost+' SP to upgrade'}</div>
-        <button class="btn-up" ${!can?'disabled':''} onclick="upgradeSkill('${sk.id}')">${maxed?'Max':'Upgrade'}</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-function upgradeSkill(id){
-  const cost=nextCost(id);if(cost===null||sp()<cost)return;
-  if(!S.skills[id])S.skills[id]=[];
-  S.skills[id].push(cost);S.spSpent+=cost;
-  save();updateSidebar();renderSkills();
-  const sk=SKILLS.find(s=>s.id===id);
-  toast(sk.name+' upgraded to '+skillVal(id)+'!');
-}
-
-// ─── GAME LOG ────────────────────────────────────────────
-function renderLog(){
-  document.getElementById('logSub').textContent=S.games.length+' game'+(S.games.length!==1?'s':'')+' recorded';
-  if(!S.games.length){document.getElementById('gameLog').innerHTML='<div class="empty">No games yet. Import your first game!</div>';return;}
-  document.getElementById('gameLog').innerHTML=[...S.games].reverse().map((g,i)=>{
-    const num=S.games.length-i;
-    return`<div class="game-entry">
-      <div>
-        <div class="game-date">Game ${num} · ${g.date} · <span style="color:${g.result==='W'?'var(--green)':'var(--red)'}">${g.result==='W'?'Win':'Loss'}</span></div>
-        <div class="gstats">
-          <span class="gs"><strong>${g.pts}</strong> PTS</span>
-          <span class="gs"><strong>${g.reb}</strong> REB</span>
-          <span class="gs"><strong>${g.ast}</strong> AST</span>
-          <span class="gs"><strong>${g.stl}</strong> STL</span>
-          <span class="gs"><strong>${g.blk}</strong> BLK</span>
-          <span class="gs"><strong>${g.tov}</strong> TOV</span>
-          <span class="gs"><strong>${g.fgp}%</strong> FG</span>
-          <span class="gs"><strong>${g.tpt}</strong> 3PM</span>
-        </div>
-      </div>
-      <div class="xp-pill">+${g.xp} XP</div>
-      <div class="sp-pill">+${Math.floor(g.xp/100)} SP</div>
-    </div>`;
-  }).join('');
-}
-
-// ─── PLAYER RANK ─────────────────────────────────────────
-function renderRankPage(ovr){
-  const tier=getTier(ovr);
-  document.getElementById('rankOvr').textContent=ovr;
-  document.getElementById('rankOvr').style.color=tier.color;
-  document.getElementById('rankBadge').textContent=tier.name;
-  document.getElementById('rankBadge').style.background=tier.bg;
-  document.getElementById('rankBadge').style.color=tier.tc;
-  document.getElementById('rMins').textContent=tier.mins;
-  document.getElementById('rMins').style.color=tier.color;
-  document.getElementById('rMinsDesc').textContent=tier.minsDesc;
-  document.getElementById('rContract').textContent=tier.contract;
-  document.getElementById('rContractDesc').textContent=tier.contractDesc;
-  document.getElementById('rSlots').textContent=tier.slots;
-  document.getElementById('rSlotsDesc').textContent=tier.slotsDesc;
-  const pct=Math.round(((ovr-60)/39)*100);
-  document.getElementById('rankProg').style.width=pct+'%';
-  document.getElementById('rankProg').style.background=tier.color;
-  // badges
-  document.getElementById('rankBadges').innerHTML=Object.entries(tier.badges).map(([cat,list])=>`
-    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
-      <div style="font-size:11px;color:var(--text3);width:80px;flex-shrink:0;padding-top:4px;">${cat}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;">${list.map(b=>`<span class="badge-pill ${badgeClass(b)}">${b}</span>`).join('')}</div>
-    </div>`).join('');
-  // all tiers
-  document.getElementById('allTiers').innerHTML=TIERS.map(t=>`
-    <div class="tier-row${t===tier?' active-tier':''}">
-      <div class="tier-ovr">${t.min}–${t.max}</div>
-      <div class="tier-desc"><div class="tier-name">${t.name}</div><div class="tier-detail">${t.mins} min · ${t.slots} badge slots</div></div>
-      <div class="tier-mins" style="color:${t.color}">${t.contract}</div>
-    </div>`).join('');
-}
-document.getElementById('rankSlider').addEventListener('input',function(){renderRankPage(+this.value);});
-
-// ─── MY BUILD ────────────────────────────────────────────
-function renderBuildAttrs(id, list){
-  document.getElementById(id).innerHTML=list.map(a=>`
-    <div class="attr-row">
-      <div class="attr-name">${a.name}</div>
-      <div class="bar-wrap"><div class="bar-fill" style="width:${a.val}%;background:${barColor(a.val)}"></div></div>
-      <div class="attr-val" style="color:${barColor(a.val)}">${a.val}</div>
-    </div>`).join('');
-}
-function renderBuild(){
-  const ovr=overall();
-  const initials=S.playerName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()||'MY';
-  document.getElementById('buildAvatar').textContent=initials;
-  document.getElementById('buildName').textContent=S.playerName;
-  document.getElementById('buildInfo').textContent=S.position+' · '+S.height+' · '+S.draftYear+' NBA Draft';
-  document.getElementById('buildOvr').textContent=ovr;
-  document.getElementById('buildSub').textContent='Starting build · '+S.startingOvr+' OVR base';
-  renderBuildAttrs('bFinishing',BASE_ATTRS.finishing);
-  renderBuildAttrs('bShooting',BASE_ATTRS.shooting);
-  renderBuildAttrs('bPlaymaking',BASE_ATTRS.playmaking);
-  renderBuildAttrs('bDefense',BASE_ATTRS.defense);
-  renderBuildAttrs('bPhysicals',BASE_ATTRS.physicals);
-  document.getElementById('buildBadges').innerHTML=`
-    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
-      <div style="font-size:11px;color:var(--text3);width:80px;flex-shrink:0;padding-top:4px;">Playmaking</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;"><span class="badge-pill b-bronze">Speed Booster (Bronze)</span><span class="badge-pill b-bronze">Handles for Days (Bronze)</span></div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
-      <div style="font-size:11px;color:var(--text3);width:80px;flex-shrink:0;padding-top:4px;">Defense</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;"><span class="badge-pill b-bronze">Menace (Bronze)</span></div>
-    </div>
-    <div style="font-size:11px;color:var(--text3);margin-top:6px;">3 of 4 badge slots used · 1 remaining at 60 OVR</div>`;
-  document.getElementById('buildTips').innerHTML=BUILD_TIPS.map(t=>`<div class="tip-card"><div class="tip-head">${t.h}</div><div class="tip-body">${t.b}</div></div>`).join('');
-}
-
-// ─── SETTINGS ────────────────────────────────────────────
-function syncSetup(){
-  document.getElementById('sName').value=S.playerName;
-  document.getElementById('sPos').value=S.position;
-  document.getElementById('sHeight').value=S.height;
-  document.getElementById('sDraftYear').value=S.draftYear;
-  document.getElementById('sStartOvr').value=S.startingOvr;
-  document.getElementById('fPts').value=S.formula.pts;
-  document.getElementById('fReb').value=S.formula.reb;
-  document.getElementById('fAst').value=S.formula.ast;
-  document.getElementById('fStl').value=S.formula.stl;
-  document.getElementById('fBlk').value=S.formula.blk;
-  document.getElementById('fTov').value=S.formula.tov;
-  document.getElementById('f3pt').value=S.formula.tpt;
-  document.getElementById('fFgb').value=S.formula.fgb;
-  document.getElementById('fWin').value=S.formula.win;
-}
-function saveProfile(){
-  S.playerName=document.getElementById('sName').value||'My Player';
-  S.position=document.getElementById('sPos').value;
-  S.height=document.getElementById('sHeight').value;
-  S.draftYear=+document.getElementById('sDraftYear').value||2011;
-  S.startingOvr=+document.getElementById('sStartOvr').value||60;
-  save();updateSidebar();toast('Profile saved!');
-}
-function saveFormula(){
-  S.formula={pts:+document.getElementById('fPts').value||3,reb:+document.getElementById('fReb').value||4,ast:+document.getElementById('fAst').value||5,stl:+document.getElementById('fStl').value||8,blk:+document.getElementById('fBlk').value||8,tov:+document.getElementById('fTov').value||5,tpt:+document.getElementById('f3pt').value||6,fgb:+document.getElementById('fFgb').value||20,win:+document.getElementById('fWin').value||50};
-  save();toast('Formula saved!');
-}
-function resetCareer(){
-  if(!confirm('Reset your entire career? This cannot be undone.'))return;
-  S={...S,totalXP:0,spSpent:0,games:[],skills:{}};
-  save();updateSidebar();toast('Career reset.');
-}
-
-// ─── TOAST ───────────────────────────────────────────────
-function toast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
-}
-
-// ─── INIT ────────────────────────────────────────────────
-load();updateSidebar();renderDashboard();
-</script>
+    <script src="index.js"></script>
 </body>
 </html>
